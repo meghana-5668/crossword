@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch to Reveal Answers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .scratch-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px;
+        }
+        #scratch-off {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            transition: opacity 2s ease-out; /* Add smooth transition */
+        }
+        .answer {
+            font-size: 24px;
+            background-color: white;
+            /* padding: 20px; */
+            border: 1px solid #ccc;
+        }
+        #dimesions{
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crossword Puzzle Answers</h1>
+    <h3>New Technology of Currency Trading: How well- versed are you with Crypto?</h3>
+    <div class="scratch-container">
+        <div class="answer" id="answer">
+            <img id="dimesions" src="Answer1.png" alt="Error">
+             <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, repellat? Cumque sequi ea voluptatem similique veniam ut? Sint perferendis maxime facere asperiores magnam! Nostrum dignissimos eaque corporis dolorem, nesciunt repellendus!</p> -->
+        </div>
+        <canvas id="scratch-off"></canvas>
+    </div>
+
+    <!-- <div class="scratch-container">
+        <div class="answer" id="answer2">2. Clue: Opposite of day (Answer: Night)</div>
+        <canvas id="scratch-off2"></canvas>
+    </div> -->
+
+    <script>
+        // Scratch-off effect for the first answer
+        const canvas1 = document.getElementById("scratch-off");
+        const answer1 = document.getElementById("answer");
+        initScratchOff(canvas1, answer1);
+
+        // // Scratch-off effect for the second answer
+        // const canvas2 = document.getElementById("scratch-off2");
+        // const answer2 = document.getElementById("answer2");
+        // initScratchOff(canvas2, answer2);
+
+        function initScratchOff(canvas, answer) {
+            const ctx = canvas.getContext("2d");
+            let isScratching = false;
+            let scratchedArea = 0;
+            const totalArea = canvas.width * canvas.height;
+
+            // Set canvas size equal to the size of the answer div
+            canvas.width = answer.offsetWidth;
+            canvas.height = answer.offsetHeight;
+
+            // Fill canvas with gray overlay
+            ctx.fillStyle = "#bbb";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Scratch effect function
+            canvas.addEventListener("mousedown", function() {
+                isScratching = true;
+            });
+
+            canvas.addEventListener("mouseup", function() {
+                isScratching = false;
+            });
+
+            canvas.addEventListener("mousemove", function(event) {
+                if (isScratching) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
+
+                    // Clear part of the overlay to reveal the answer
+                    ctx.globalCompositeOperation = "destination-out";
+                    ctx.beginPath();
+                    ctx.arc(x, y, 15, 0, Math.PI * 2, false);
+                    ctx.fill();
+
+                    // Calculate scratched area
+                    scratchedArea += Math.PI * Math.pow(15, 2); // Area of a circle (arc)
+                    
+                    // Check if 30% of the area is scratched
+                    if ((scratchedArea / totalArea) > 0.5) {
+                        autoScratch(canvas);
+                    }
+                }
+            });
+        }
+
+        // Function to auto-scratch the entire canvas with transition
+        function autoScratch(canvas) {
+            canvas.style.opacity = "0";  // Fade-out effect
+            setTimeout(() => {
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+                canvas.style.opacity = "1";  // Reset opacity after clear
+            }, 2000); // Wait for 2 seconds to let the transition finish
+        }
+    </script>
+</body>
+</html>
